@@ -1,0 +1,151 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Scrapbook
+{% endblock %}
+
+{% block main %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+			{% for category, msg in messages %}
+			<div class="alert alert-{{ category }}" role="alert">
+  			{{ msg }}
+			</div>
+			<br>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+
+<br><br><br>
+
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; top: 0; right: 0; z-index: 10" data-delay="2000">
+  <div class="toast-header">
+    <img src="https://i.imgur.com/ZcaiH8r.png" height="60" width="60" class="rounded mr-2" alt="Success!">
+    <strong class="mr-auto">Scrapbook Updated!</strong>
+    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+</div>
+
+
+<div class = "col-sm-12 offset-md-4">
+	<form action = "/scrapbook" method = "post">
+	  <input name="switch" type="hidden" value="no">
+	  <input name="view" type="hidden" value="{{ view }}">
+		<button type="submit" class="btn btn-warning btn-sm" {{ status }}>RETURN TO MY SCRAPBOOK</button>
+	</form>
+</div>
+
+<div class="container h-100">
+    <form action = "/scrapbook" method="post">
+		<div class="d-flex justify-content-center h-100">
+		  <input name="view" type="hidden" value="{{ view }}">
+		  <input name="username" type="hidden" value="{{ username }}">
+		  <input name="switch" type="hidden" value="yes">
+			<button type="submit" class="btn btn-light btn-lg">VIEW IN {{ view }} MODE</button>
+			</form>
+			<div class="search_card">
+				<div class="d-flex justify-content-center">
+					<div class="brand_logo_container">
+						<img src="https://i.imgur.com/89SVtyf.png" class="brand_logo" alt="Logo">
+					</div>
+				</div>
+        <br><br><br><br>
+				<h1 class = "white">{{ userdisplay }} Scrapbook</h1>
+				<form action = "/scrapbook" method="post">
+				  <input type="text" autocomplete = "off" name="username" id="userselect" class="form-control input_user" placeholder="Search for User Scrapbooks" value="{{ username }}">
+				  <input name="view" type="hidden" value="{{ view }}">
+				  <input name="switch" type="hidden" value="no">
+				  <br><br>
+				  <button type="submit" class="btn btn-danger btn-lg btn-block">SEARCH!</button>
+			  </form>
+			</div>
+		</div>
+</div>
+
+<br>
+
+  {% for result in query %}
+  <form action = "/update" method = "post" onsubmit = "updateWebsite()">
+  <div class="card mb-3" style="max-width: 100%;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{ result.image }}" alt="..." width = "350px" height = "350px">
+    </div>
+    <div class = "col-md-8">
+      <br>
+      <h5 class="card-title">{{result.rover}}: {{ result.capturedate }}</h5>
+      <p class="card-text">SOL: {{ result.sol }} &nbsp;&nbsp;&nbsp;&nbsp; Camera: {{ result.camera }} &nbsp;&nbsp;&nbsp;&nbsp; <a href = "{{ result.image }}" target = "_blank">View Full Image</a> </p>
+      <input class="form-control form-control-lg" type="text" name = "title" placeholder="Enter Caption" aria-label=".form-control-lg example" size="60" value = "{{ result.title }}" autocomplete = "off">
+      <div class="form-floating">
+      <textarea name = "caption" class="form-control" placeholder="Leave your thoughts here" id="floatingTextarea" rows = "5" cols = "82" autocomplete = "off">{{ result.caption }}</textarea>
+    </div>
+    <div style="width:100%;">
+    <div style="float: left; width: 35%">
+      <input name="id" type="hidden" value="{{ result.id }}">
+      <button type="submit" class="btn btn-primary btn-lg" inline = "true">SAVE CHANGES</button>
+    </div>
+    </form>
+    <div style="float: right; width: 24%">
+        <form action="/delete" method="post">
+            <input name="id" type="hidden" value="{{ result.id }}">
+            <button type="submit" class="btn btn-danger btn-lg" inline = "true">DELETE</button>
+        </form>
+    </div>
+    </div>
+    </div>
+    <br>
+  </div>
+  </div>
+  <script>
+    function updateWebsite() {
+      $('.toast').toast('show')
+    }
+  </script>
+  {% endfor %}
+
+  {% for result in userLoad %}
+  <form action = "/add" method="post" onsubmit = "alertWebsite()">
+  <div class="card mb-3" style="max-width: 100%;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{ result.image }}" alt="..." width = "350px" height = "350px">
+    </div>
+    <div class = "col-md-8">
+      <br>
+      <h5 class="card-title">{{result.rover}}: {{ result.capturedate }}</h5>
+      <p class="card-text">SOL: {{ result.sol }} &nbsp;&nbsp;&nbsp;&nbsp; Camera: {{ result.camera }} &nbsp;&nbsp;&nbsp;&nbsp; <a href = "{{ result.image }}" target = "_blank">View Full Image</a> </p>
+      <input class="form-control form-control-lg" type="text" readonly name = "title" placeholder="Enter Caption" aria-label=".form-control-lg example" size="60" value = "{{ result.title }}" autocomplete = "off">
+      <div class="form-floating">
+      <textarea readonly name = "caption" class="form-control" placeholder="Leave your thoughts here" id="floatingTextarea" rows = "5" cols = "82" autocomplete = "off">{{ result.caption }}</textarea>
+      </div>
+    <input name="image" type="hidden" value="{{ result.image }}">
+    <input name="rover" type="hidden" value="{{ result.rover }}">
+    <input name="date" type="hidden" value="{{ result.capturedate }}">
+    <input name="camera" type="hidden" value="{{ result.camera }}">
+    <input name="sol" type="hidden" value="{{ result.sol }}">
+    <button type="submit" style = "width: 500px;" class="btn btn-success btn-lg" id= "{{ result.id }}">ADD TO SCRAPBOOK</button>
+    </div>
+    <br>
+    <script>
+      function alertWebsite() {
+          $('.toast').toast('show')
+        }
+    </script>
+  </div>
+  </div>
+  </form>
+  {% endfor %}
+
+  {% for result in gallery %}
+  <img src = "{{ result.image }}">
+  <br><br>
+  {% endfor %}
+
+
+
+{% endblock %}
+
+

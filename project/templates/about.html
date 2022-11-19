@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Capture Search
+{% endblock %}
+
+{% block main %}
+<br><br><br>
+
+
+<div class="d-flex justify-content-center h-100">
+			<div class="search_card">
+				<div class="d-flex justify-content-center">
+					<div class="brand_logo_container">
+						<img src="https://i.imgur.com/89SVtyf.png" class="brand_logo" alt="Logo">
+					</div>
+				</div>
+        <br><br><br>
+				<h1 class = "white">What is RoverSnap?</h1>
+			</div>
+		</div>
+</div>
+
+<br><br>
+
+
+<div class="shadow p-3 mb-5 bg-white rounded">
+  RoverSnap is a web app created with Flask, Python, and SQL that allows users to search for Mars Rover pictures and save it to their own profile. Users are also able to search for other user profiles to streamline interesting rover photos found by all users on the site. <a href = "https://api.nasa.gov/"><b>All photos are retrieved from the official NASA API.</b></a>
+</div>
+
+<div class="shadow p-3 mb-5 bg-white rounded">
+  This app was originally created for the final project of Harvard CS50x. <b>I would like to thank their team for the help.</b>
+</div>
+
+<div class="shadow p-3 mb-5 bg-white rounded">
+  Bootstrap Login template taken from @SamimOnline at BootSnipp. <a href= "https://bootsnipp.com/snippets/3522X"><b>Please check out his work there.</b></a>
+</div>
+
+<div class="shadow p-3 mb-5 bg-white rounded">
+  <b>Developed by <a href = "https://www.linkedin.com/in/someshkarthi/">Somesh Karthi</a>, a Computer Engineering Student @ the University of Toronto</b>
+</div>
+
+
+{% with messages = get_flashed_messages() %}
+	{% if messages %}
+		{% for msg in messages %}
+		<div class="alert alert-danger" role="alert">
+  		{{ msg }}
+		</div>
+		<br>
+		{% endfor %}
+	{% endif %}
+{% endwith %}
+
+
+
+{% endblock %}
+
+

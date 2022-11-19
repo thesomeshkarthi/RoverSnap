@@ -1,0 +1,109 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Capture Search
+{% endblock %}
+
+{% block main %}
+<br><br><br>
+
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; top: 0; right: 0; z-index: 10" data-delay="2000">
+  <div class="toast-header">
+    <img src="https://i.imgur.com/ZcaiH8r.png" height="60" width="60" class="rounded mr-2" alt="Success!">
+    <strong class="mr-auto">Added to Scrapbook</strong>
+    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+</div>
+
+
+
+<div class="d-flex justify-content-center h-100">
+			<div class="search_card">
+				<div class="d-flex justify-content-center">
+					<div class="brand_logo_container">
+						<img src="https://i.imgur.com/89SVtyf.png" class="brand_logo" alt="Logo">
+					</div>
+				</div>
+        <br><br><br><br>
+				<h1 class = "white">Search For Rover Captures</h1>
+				<form action = "/" method="post">
+				<select id = "sel" name = "rover">
+				<optgroup>
+			      <option {{ cur }}>Curiosity</option>
+            <option {{ opp }}>Opportunity</option>
+            <option {{ spi }}>Spirit</option>
+        </optgroup>
+			   </select>
+				<input type="date" autocomplete = "off" name="date" class="form-control input_user" id = "dateselect" max = "2999-12-31" value = "{{ date }}">
+				<br><br>
+				<button type="submit" class="btn btn-danger btn-lg btn-block">SEARCH!</button>
+			    </form>
+			</div>
+		</div>
+</div>
+
+<br><br><br>
+
+{% with messages = get_flashed_messages() %}
+	{% if messages %}
+		{% for msg in messages %}
+		<div class="alert alert-danger" role="alert">
+  		{{ msg }}
+		</div>
+		<br>
+		{% endfor %}
+	{% endif %}
+{% endwith %}
+
+
+  {% for result in query %}
+  <form action = "/add" method = "post" id = "{{ result.id }}" onsubmit = "alertWebsite()">
+  <div class="card mb-3" style="max-width: 100%;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{ result.image }}" alt="..." width = "350px" height = "350px">
+    </div>
+    <div class = "col-md-8">
+      <br>
+      <h5 class="card-title">{{result.rover}}: {{ result.date }}</h5>
+      <p class="card-text">SOL: {{ result.sol }} &nbsp;&nbsp;&nbsp;&nbsp; Camera: {{ result.camera }} &nbsp;&nbsp;&nbsp;&nbsp; <a href = "{{ result.image }}" target = "_blank">View Full Image</a> </p>
+      <input class="form-control form-control-lg" type="text" name = "title" placeholder="Enter Caption" aria-label=".form-control-lg example" size="60" autocomplete = "off">
+      <div class="form-floating">
+      <textarea name = "caption" class="form-control" placeholder="Leave your thoughts here" id="floatingTextarea" rows = "5" cols = "82" autocomplete = "off"></textarea>
+      </div>
+      <input name="image" type="hidden" value="{{ result.image }}">
+      <input name="rover" type="hidden" value="{{ result.rover }}">
+      <input name="date" type="hidden" value="{{ result.date }}">
+      <input name="camera" type="hidden" value="{{ result.camera }}">
+      <input name="sol" type="hidden" value="{{ result.sol }}">
+      <button type="submit" style = "width: 500px;" class="btn btn-success btn-lg" id= "{{ result.id }}">ADD TO SCRAPBOOK</button>
+      </form>
+      <script>
+        function changeText(button_id) {
+          alert("Successfully added to Scrapbook!")
+          var btn = document.getElementById(button_id);
+          btn.disabled = true;
+          btn.innerHTML = "ADDED";
+          return true;
+        }
+      </script>
+      <script>
+        function alertWebsite() {
+          $('.toast').toast('show')
+        }
+      </script>
+    </div>
+    <br>
+  </div>
+  </div>
+  {% endfor %}
+
+
+
+
+
+{% endblock %}
+
+
